@@ -35,6 +35,7 @@ let add = (data, callback) => {
 // write method to update entries
 let update = (data, callback) => {
   var filter = {term: data.term};
+  console.log(filter)
   var newDef = {definition: data.definition};
   Term.findOneAndUpdate(filter, newDef, function(err) {
     if (err) {
@@ -45,6 +46,7 @@ let update = (data, callback) => {
 }
 // write method to delete entries
 let remove = (data, callback) => {
+  console.log(data)
   Term.deleteOne(data, function(err) {
     if (err) {
       console.log(`Error deleting ${word} from database`)
@@ -54,6 +56,7 @@ let remove = (data, callback) => {
 }
 // write method to pull entries based on criteria
 let find = (query, callback) => {
+  console.log(query)
   Term.find(query, {term: 1, definition: 1, _id: 0}).exec(callback);
 };
 

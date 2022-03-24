@@ -12,7 +12,6 @@ app.use(express.json());
 
 // handle POST request from client, sends back updated list
 app.post(url, (req, res) => {
-  console.log(req.body)
   mongoose.add(req.body, (err, data) => {
     if (err) {
       console.log('Error receiving data from db');
@@ -22,6 +21,7 @@ app.post(url, (req, res) => {
 })
 // handle UPDATE ('PUT') request from client, sends back updated list
 app.put(url, (req, res) => {
+  console.log(req.body)
   mongoose.update(req.body, (err, data) => {
     if (err) {
       console.log('Error updating');
@@ -31,6 +31,7 @@ app.put(url, (req, res) => {
 })
 // handle DELETE request from client, sends back updated list
 app.delete(url, (req, res) => {
+  console.log(req.body);
   mongoose.remove(req.body, (err, data) => {
     if (err) {
       console.log('Error deleting entry');
@@ -39,9 +40,18 @@ app.delete(url, (req, res) => {
   })
 })
 // handle GET
+app.get('/glossary/:term', (req, res) => {
+  console.log('what server is receiving for search', req.params)
+  mongoose.find(req.params, (err, data) => {
+    if (err) {
+      console.log('Error getting entry');
+    }
+    res.end(JSON.stringify(data));
+  })
+})
+// get all
 app.get(url, (req, res) => {
-  console.log('received get request');
-  mongoose.find(req.body, (err, data) => {
+  mongoose.find({}, (err, data) => {
     if (err) {
       console.log('Error getting entry');
     }

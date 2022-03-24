@@ -3,6 +3,7 @@ import TermList from './TermList.jsx';
 import Search from './Search.jsx';
 import Add from './Add.jsx';
 import $ from 'jquery';
+const axios = require('axios');
 
 const url = '/glossary';
 const test = {term: 'Hello', definition: 'Greeting'};
@@ -13,82 +14,61 @@ class App extends React.Component {
     this.state = {
       terms: []
     }
-    // this.addTerm.bind(this);
-    this.updateTerm.bind(this);
-    this.deleteTerm.bind(this);
-    this.getTerm.bind(this);
-    this.handleAdd.bind(this);
-    this.handleDelete.bind(this);
-    this.handleEdit.bind(this);
-  };
-  // addTerm(termObj, callback) {
-  //   $.post(url, termObj, function(data) {
-  //     callback(JSON.parse(data));
-  //   })
-  // };
-  updateTerm(upTerm, upDefinition, callback) {
-    $.ajax({
-      url: url,
-      method: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        term: upTerm,
-        definition: upDefinition}),
-      success: callback(JSON.parse(data))
-    })
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   };
 
-  deleteTerm(term, callback) {
-    // term should be object {term: word}
-    $.ajax({
-      url: url,
-      method: 'DELETE',
-      data: JSON.stringify(term),
-      success: callback(JSON.parse(data))
-    })
-  };
-  getTerm(term, callback) {
-    $.ajax({
-      url: url,
-      method: 'GET',
-      data: JSON.stringify(term),
-      success: function(data) {
-        callback(JSON.parse(data));
-      }
-    })
-  };
-  handleAdd(word, def, callback) {
-    event.preventDefault();
+  handleAdd(word, def) {
     let termObj = {term: word, definition: def};
-    // why is this not a function
-    $.ajax({
-      url: url,
-      method: 'POST',
-      data: JSON.stringify(termObj),
-      success: (data) => {
-        console.log(this);
-        this.setState({
-          terms: data
-        })
-      }
+    axios.post(url, termObj)
+    .then((response) => {
+      this.setState({
+        terms: response.data
+      });
     })
+    .catch((err) => {console.log('Error adding new word.')})
   };
-  handleEdit() {
-
+  handleEdit(term) {
+    let newDef = prompt('Please enter new definition.');
+    axios.put(url,
+      {term: term,
+       definition: newDef})
+    .then((response) => {
+      this.setState({
+        terms: response.data
+      });
+    })
+    .catch((err) => {console.log('Error deleting.')})
   };
   handleDelete(term) {
-    deleteTerm(term, (data) => {
+    axios.delete(url, {data: {term: term}})
+    .then((response) => {
       this.setState({
-        terms: data
-      })
+        terms: response.data
+      });
     })
+    .catch((err) => {console.log('Error deleting.')})
   };
-  componentDidMount() {
-    this.getTerm({}, (data) => {
+  handleSearch(term) {
+    axios.get(`glossary/${term}`)
+    .then((response) => {
+      console.log(this, response.data)
       this.setState({
-        terms: data
+        terms: response.data
+      });
+    })
+    .catch((err) => {console.log('Error getting search.')})
+  }
+  componentDidMount() {
+    axios.get(`glossary/`)
+    .then((response) => {
+      this.setState({
+        terms: response.data
       })
     })
+    .catch((err) => {console.log('Error fetching all.')})
   };
   render() {
     return (
@@ -97,8 +77,8 @@ class App extends React.Component {
           Glossary
         </h1>
         <Add handleAdd={this.handleAdd}/>
-        {/* <Search /> */}
-        <TermList terms={this.state.terms} handleDelete={this.handleDelete} />
+        <Search handleSearch={this.handleSearch}/>
+        <TermList terms={this.state.terms} handleDelete={this.handleDelete} handleEdit={this.handleEdit}/>
       </div>
     );
   };

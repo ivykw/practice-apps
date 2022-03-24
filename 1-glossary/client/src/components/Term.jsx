@@ -7,6 +7,7 @@ function Term(props) {
       <b>{props.term.term}</b>
       <div>{props.term.definition}</div>
       <button onClick={(e) => {props.handleDelete(props.term.term)}}>Delete Entry</button>
+      <button onClick={(e) => {props.handleEdit(props.term.term)}}>Update Entry</button>
     </div>
   );
 }

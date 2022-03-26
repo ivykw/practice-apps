@@ -21,12 +21,12 @@ db.connectAsync()
   )
   .catch((err) => console.log(err));
 
-db.insert = function(data) {
+db.insert = function(session_id, data) {
   connection.connect((err) => {
     if (err) {
       console.log('Error connecting to DB to insert');
     }
-    let insert = `INSERT INTO info VALUES ('${data.session_id}', '${data.name}', '${data.email}', '${data.password}', '${data.address1}', '${data.address2}', '${data.city}', '${data.state}', '${data.zip}', '${data.phone}', '${data.card_num}', '${data.card_expiry}', '${data.cvv}', '${data.bill_zip}')`;
+    let insert = `INSERT INTO info VALUES ('${session_id}', '${data.name}', '${data.email}', '${data.password}', '${data.address1}', '${data.address2}', '${data.city}', '${data.state}', '${data.zip}', '${data.phone}', '${data.card_num}', '${data.card_expiry}', '${data.cvv}', '${data.bill_zip}')`;
     connection.query(insert, (err) => {
       if (err) {
         console.log(err);
@@ -40,7 +40,8 @@ db.search = function(session, callback) {
     if (err) {
       console.log('Error connecting to DB to pull info');
     }
-    let search = `SELECT * FROM info WHERE session_id = ${session}`;
+    console.log(session)
+    let search = `SELECT * FROM info WHERE session_id = '${session}'`;
     connection.query(search, (err, data) => {
       if (err) {
         console.log('Error finding info by session');

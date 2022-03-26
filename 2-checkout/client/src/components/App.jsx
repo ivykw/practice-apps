@@ -3,7 +3,7 @@ import Welcome from './Welcome.jsx';
 import F1 from './F1.jsx';
 import F2 from './F2.jsx';
 import F3 from './F3.jsx';
-import Confirmation from './F3.jsx';
+import Confirmation from './Confirmation.jsx';
 const axios = require('axios');
 
 class App extends React.Component {
@@ -33,7 +33,7 @@ class App extends React.Component {
     this.handleF1Sub = this.handleF1Sub.bind(this);
     this.handleF2Sub = this.handleF2Sub.bind(this);
     this.handleF3Sub = this.handleF3Sub.bind(this);
-    this.handleReturn = this.handleReturn.bind(this);
+    this.handlePurchase = this.handlePurchase.bind(this);
   }
   handleBegin(event) {
     event.preventDefault();
@@ -73,9 +73,8 @@ class App extends React.Component {
       confirmation: true
     })
   };
-  handleReturn() {
+  handlePurchase() {
     let data = this.state;
-    console.log(data)
     axios.post('/checkout', data)
     .then(() => {
       console.log('Data posted to server!');
@@ -116,10 +115,11 @@ class App extends React.Component {
       page = <F2 handleF2Sub={this.handleF2Sub} />
     }
     if (this.state.F3 === true) {
-      page = <F3 handleF2Sub={this.handleF2Sub} />
+      page = <F3 handleF3Sub={this.handleF3Sub} />
     }
     if (this.state.confirmation === true) {
-      page = <Confirmation data={this.state} handleReturn={this.handleReturn} />
+      console.log(this.state)
+      page = <Confirmation data={this.state} handlePurchase={this.handlePurchase} />
     }
     return (
       <div>

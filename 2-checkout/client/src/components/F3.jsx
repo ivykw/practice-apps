@@ -21,7 +21,6 @@ class F3 extends React.Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    console.log(this.state)
     this.props.handleF3Sub(this.state);
   }
   render() {

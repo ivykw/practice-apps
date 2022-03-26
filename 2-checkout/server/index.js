@@ -21,8 +21,7 @@ app.use(express.static(path.join(__dirname, "../client/dist")));
 
 // handle POST request for all info
 app.post('/checkout', (req, res) => {
-  // db.insert(req.session_id, req.body);
-  console.log(req.body)
+  db.insert(req.session_id, req.body);
   res.end();
 })
 // handle GET request for all info
@@ -30,7 +29,6 @@ app.get('/checkout', (req, res) => {
   db.search(req.session_id, (data) => {
     let response = data[0];
     delete response.session_id;
-    console.log(response);
     res.end(response);
   });
 })
